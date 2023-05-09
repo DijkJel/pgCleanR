@@ -1,0 +1,15 @@
+Package: pgcleaneR
+Title: Several functions for maxquant proteingroups workflow
+Version: 0.0.0.9000
+Authors@R: 
+    person("Jelmer", "Dijkstra", , "j.dijkstra@nki.nl", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Cleans maxquant proteinGroups files and performs simple LFQ differential protein expression analysis.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.2
+Depends: 
+    R (>= 2.10)
+LazyData: true
+LazyDataCompression:bzip2
