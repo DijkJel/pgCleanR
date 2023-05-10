@@ -30,21 +30,21 @@ fill_IDs = function(pg, uniprot, species = 'Hs'){
   pg = pg[!is.na(pg$Razor...unique.peptides),]
   pg = pg[pg$Razor...unique.peptides > 1,]
   
-  no_peptides = sapply(pg$Peptide.counts..razor.unique., function(x){
-    n = as.numeric(strsplit(x, ';')[[1]])
-    n = which(n == max(n))
-    return(n[length(n)])
-  })
-  
-  
-  extract_proteinId = function(n, protID){
-    
-    pid = strsplit(protID, ';')[[1]][1:n]
-    pid = paste(pid, collapse = ';')
-    return(pid)
-  }
-  
-  pg$Protein.IDs = mapply(extract_proteinId, no_peptides, pg$Protein.IDs)
+  # no_peptides = sapply(pg$Peptide.counts..razor.unique., function(x){
+  #   n = as.numeric(strsplit(x, ';')[[1]])
+  #   n = which(n == max(n))
+  #   return(n[length(n)])
+  # })
+  # 
+  # 
+  # extract_proteinId = function(n, protID){
+  #   
+  #   pid = strsplit(protID, ';')[[1]][1:n]
+  #   pid = paste(pid, collapse = ';')
+  #   return(pid)
+  # }
+  # 
+  # pg$Protein.IDs = mapply(extract_proteinId, no_peptides, pg$Protein.IDs)
 
   uniprot_rev = uniprot[uniprot$Status == 'reviewed',]
   uniprot_rev$Gene.names = sapply(uniprot_rev$Gene.names, function(x){strsplit(x, ';')[[1]][1]})
@@ -60,7 +60,7 @@ fill_IDs = function(pg, uniprot, species = 'Hs'){
     pid = x[['Protein.IDs']]
     pid = sapply(pid, function(x){strsplit(x, ';')})[[1]]
     gene_names = x[['Gene.names']]
-
+    
     line <<- line + 1
 
     if (line > next_pct){
@@ -77,20 +77,22 @@ fill_IDs = function(pg, uniprot, species = 'Hs'){
 
       out = list(id = id, gene_name = gn)
     }
-    else if (any(pid %in% uniprot_unrev$UniProtKB.Gene.Name.ID)) {
+    else if (any(pid %in% uniprot_unrev$Entry)) {
 
-      up = uniprot_unrev[which(up$Entry %in% pid),]
+      up = uniprot_unrev[which(uniprot_unrev$Entry %in% pid),]
       ensembl_ids = up$Gene.stable.ID
-
+      ensembl_ids = ensembl_ids[ensembl_ids != '']
+      
       if (any(ensembl_ids %in% uniprot_rev$Gene.stable.ID)){
-        uniprot_id = uniprot_ids[uniprot_ids %in% uniprot_rev$Entry, 'UniProtKB.Gene.Name.ID'][1]
-        gn = uniprot_rev[uniprot_rev$UniProtKB.Gene.Name.ID == uniprot_id, 'Gene.names']
+        uniprot_id = uniprot_rev[which(uniprot_rev$Gene.stable.ID %in% ensembl_ids), 'Entry']
+        uniprot_id = names(which.max(table(uniprot_id)))
+        gn = uniprot_rev[uniprot_rev$Entry == uniprot_id, 'Gene.names']
         gn = strsplit(gn, ' ')[[1]][1]
       }
       else if (any(ensembl_ids %in% uniprot_unrev$Gene.stable.ID)) {
-        uniprot_ids = uniprot_unrev[which(ensembl_ids %in% uniprot_unrev$Gene.stable), 'UniProtKB.Gene.Name.ID']
+        uniprot_ids = uniprot_unrev[which(uniprot_unrev$Gene.stable.ID %in% ensembl_ids), 'Entry']
         uniprot_id = names(which.max(table(uniprot_ids)))
-        gn = uniprot_unrev[uniprot_unrev$UniProtKB.Gene.Name.ID == uniprot_id,'Gene.names']
+        gn = uniprot_unrev[uniprot_unrev$Entry == uniprot_id,'Gene.names']
         gn = strsplit(gn, ' ')[[1]][1]
       }
       out = list(id = uniprot_id, gene_name = gn)
@@ -101,6 +103,11 @@ fill_IDs = function(pg, uniprot, species = 'Hs'){
       uniprot_id = pid[1]
       gn = pid[1]
       out = list(id = uniprot_id, gene_name = gn)
+    }
+    
+    if (is.na(out$gene_name)){
+      out$gene_name = out$id
+      no_match <<- no_match + 1
     }
     return(out)
   })
