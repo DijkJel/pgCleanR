@@ -15,8 +15,8 @@ addGeneInfo = function(pg, uniprot){
 
   gene_ids = merge(pg, uniprot, by.x = 'Protein.IDs', by.y = 'Entry', all.x = T, all.y = F)
   nc = ncol(gene_ids)
-  pg = gene_ids[,-c((nc-9):(nc-4),(nc-3))]
-  #pg = pg[!duplicated(pg$Protein.IDs),]
+  pg = gene_ids[,-c((nc-9):(nc-4),(nc-2))]
+  pg = pg[!duplicated(pg$Protein.IDs),]
 
   colnames(pg)[(ncol(pg)-2):ncol(pg)] = c('Ensembl_ID', 'RefSeq_ID', 'Entrez_ID')
   pg$RefSeq_ID = gsub('\\.\\d+', '', pg$RefSeq_ID)

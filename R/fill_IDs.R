@@ -29,6 +29,22 @@ fill_IDs = function(pg, uniprot, species = 'Hs'){
   pg = pg[pg$Potential.contaminant != '+' & pg$Reverse != '+',]
   pg = pg[!is.na(pg$Razor...unique.peptides),]
   pg = pg[pg$Razor...unique.peptides > 1,]
+  
+  no_peptides = sapply(pg$Peptide.counts..razor.unique., function(x){
+    n = as.numeric(strsplit(x, ';')[[1]])
+    n = which(n == max(n))
+    return(n[length(n)])
+  })
+  
+  
+  extract_proteinId = function(n, protID){
+    
+    pid = strsplit(protID, ';')[[1]][1:n]
+    pid = paste(pid, collapse = ';')
+    return(pid)
+  }
+  
+  pg$Protein.IDs = mapply(extract_proteinId, no_peptides, pg$Protein.IDs)
 
   uniprot_rev = uniprot[uniprot$Status == 'reviewed',]
   uniprot_rev$Gene.names = sapply(uniprot_rev$Gene.names, function(x){strsplit(x, ';')[[1]][1]})

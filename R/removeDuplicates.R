@@ -1,3 +1,14 @@
+#' Remove Duplicates from a Protein Group DataFrame
+#'
+#' This function removes duplicate entries from a given protein group DataFrame.
+#'
+#' @param pg A protein group DataFrame containing Protein.IDs and Razor...unique.peptides columns.
+#' @return A list containing the protein group DataFrame with duplicates removed and a DataFrame of the removed duplicates.
+#' @export
+#' @examples
+#' pg <- data.frame(Protein.IDs = c("A", "A", "B", "C"), Razor...unique.peptides = c(1, 2, 3, 4))
+#' removeDuplicates(pg)
+#' 
 removeDuplicates = function(pg){
 
   if (any(duplicated(pg$Protein.IDs))){
@@ -33,5 +44,5 @@ removeDuplicates = function(pg){
     message('No duplicates found.')
   }
 
-  return(pg)
+  return(list(proteinGroups = pg))
 }

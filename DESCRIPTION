@@ -1,4 +1,4 @@
-Package: pgcleaneR
+Package: pgcleanR
 Title: Several functions for maxquant proteingroups workflow
 Version: 0.0.0.9000
 Authors@R: 
@@ -12,4 +12,10 @@ RoxygenNote: 7.2.2
 Depends: 
     R (>= 2.10)
 LazyData: true
-LazyDataCompression:bzip2
+LazyDataCompression: bzip2
+Imports: 
+    DEP,
+    MsCoreUtils,
+    stats,
+    SummarizedExperiment,
+    utils

@@ -15,8 +15,21 @@ usethis::use_build_ignore('setup.R')
 
 use_r('addGeneInfo')
 use_r('removeDuplicates')
+use_r('createExperimentalDesign')
+use_r('performImputation')
+use_r('performDEP')
+use_r('cleanPg')
 
+use_package('utils')
+use_package('stats')
+use_package('SummarizedExperiment')
 
 pg2 = fill_IDs(pg, uniprot_hs)
-pg3 = addGeneInfo(pg2, uniprot_hs)
-pg4 = removeDuplicates(pg3)
+pg3 = removeDuplicates(pg2)
+pg4 = addGeneInfo(pg3, uniprot_hs)
+expDesign = createExperimentalDesign(pg4)
+
+dep_res = performDEP(pg_clean, expDesign, thr = 0)
+
+
+pg_clean = cleanPg(pg, uniprot_hs)
