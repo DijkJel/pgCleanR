@@ -25,6 +25,6 @@ If the protein ID matches an unreviewed protein in UniProt, the function attempt
 If a protein ID does not match any protein in UniProt, the function uses the protein ID as the gene name.
 }
 \examples{
-\dontrun{fill_IDs(my_data, uniprot_data)}
+fill_IDs(pg, uniprot_hs)
 
 }

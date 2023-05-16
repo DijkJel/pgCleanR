@@ -8,7 +8,8 @@
 #' @param expDesign A data frame specifying the experimental design with at least two columns: 'Sample.ID' and 'Condition'.
 #' @return A numeric matrix with imputed intensity values for missing data.
 #'
-#' @import MsCoreUtils stats
+#' @import MsCoreUtils
+#' @rawNamespace import(stats, except = c(start, end, smooth))
 #' @export
 performImputation = function(intensities, expDesign){
 

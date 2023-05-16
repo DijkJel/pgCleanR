@@ -8,9 +8,13 @@
 #' @examples
 #' \dontrun{performDEP(pg, expDesign)}
 #' @import DEP SummarizedExperiment
+#' @importFrom assertthat assert_that
 #' @export
 
 performDEP = function(pg, expDesign, thr = 1){
+  
+  
+  stopifnot(checkExperimentalDesign(pg, expDesign))
   
   pg = DEP::make_unique(pg, "Gene.names", "Protein.IDs", delim = ";")
   data_se = DEP::make_se(pg, grep('LFQ', colnames(pg)), expDesign)

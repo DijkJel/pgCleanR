@@ -17,7 +17,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{fill_IDs(my_data, uniprot_data)}
+#' fill_IDs(pg, uniprot_hs)
 #'
 
 fill_IDs = function(pg, uniprot, species = 'Hs'){
