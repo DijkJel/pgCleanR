@@ -59,8 +59,9 @@ fill_IDs = function(pg, uniprot, species = 'Hs'){
 
 
       up = uniprot_rev[uniprot_rev$Entry %in% pid,]
-      up = up[up$Gene.names != '',]
+      #up = up[up$Gene.names != '',]
 
+      if (!all(up$Gene.names == '')) up = up[up$Gene.names != '',]
       if (!all(up$Gene.stable.ID == '')) up = up[up$Gene.stable.ID != '',]
       
       gn = up[1,'Gene.names']

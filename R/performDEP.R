@@ -14,7 +14,7 @@
 performDEP = function(pg, expDesign, thr = 1){
   
   
-  stopifnot(checkExperimentalDesign(pg, expDesign))
+  stopifnot(checkExperimentalDesign(expDesign, pg))
   
   pg = DEP::make_unique(pg, "Gene.names", "Protein.IDs", delim = ";")
   data_se = DEP::make_se(pg, grep('LFQ', colnames(pg)), expDesign)

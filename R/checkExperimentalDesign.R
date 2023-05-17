@@ -16,7 +16,7 @@
 checkExperimentalDesign = function(ed, pg){
   
   assert_that(all(colnames(ed) == c('label', 'condition',  'replicate')),
-              msg = 'Wrong column names. There should be three columns labeled \'label, condition, and replicate\'')
+              msg = 'Wrong column names in expDesign. There should be three columns labeled \'label, condition, and replicate\'')
   
   lfq_columns = paste('LFQ.intensity', ed$label, sep = '.')
   
