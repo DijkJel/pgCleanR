@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(pgcleanR)
+library(pgCleanR)
 
-test_check("pgcleanR")
+test_check("pgCleanR")

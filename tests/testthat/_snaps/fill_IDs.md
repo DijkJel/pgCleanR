@@ -19,7 +19,7 @@
       19      P30405       PPIF
       20      P50453   SERPINB9
       22      P49790     NUP153
-      24      P58876      H2BC5
+      24      Q96A08      H2BC1
       25      P62873       GNB1
       26      Q01581     HMGCS1
       27      Q13423        NNT
@@ -40,5 +40,5 @@
       46      Q14847      LASP1
       47      P53396       ACLY
       48      P46060    RANGAP1
-      50      P51148      RAB5C
+      50      P20339      RAB5A
 

@@ -1,4 +1,4 @@
-Package: pgcleanR
+Package: pgCleanR
 Title: Several functions for maxquant proteingroups workflow
 Version: 0.0.0.9000
 Authors@R: 
@@ -22,5 +22,8 @@ Imports:
     SummarizedExperiment,
     utils
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr

@@ -4,6 +4,7 @@ test_that("IDs correctly filled", {
   out = out[,c('Protein.IDs', 'Gene.names')]
 
   expect_type(out, 'list')
+  
   expect_snapshot(out)
 })
 

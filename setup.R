@@ -36,12 +36,4 @@ use_package('assertthat')
 
 use_test('fill_IDs')
 
-pg2 = fill_IDs(pg, uniprot_hs)
-pg3 = removeDuplicates(pg2)
-pg4 = addGeneInfo(pg3, uniprot_hs)
-expDesign = createExperimentalDesign(pg4)
-
-dep_res = performDEP(pg_clean, expDesign, thr = 0)
-
-
-pg_clean = cleanPg(pg, uniprot_hs)
+use_vignette('pgCleanR')
