@@ -14,6 +14,106 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+Install and load the pgCleanR package from github with the following code:
+
+```{r, eval = FALSE}
+if (!require('devtools', quietly = T)){
+  install_packages('devtools')
+}
+
+devtools::install_github('DijkJel/pgCleanR')
+
+```
+
+```{r, setup}
 library(pgCleanR)
 ```
+
+
+The package comes with two data sets included: 
+
+* An example proteinGroups file called 'pg' with label-free quantification (LFQ) data on 4x3 samples.
+* A uniprot database with information about all human entries called 'uniprot_hs'. 
+
+Both data sets can be inspected:
+
+```{r, eval = FALSE}
+View(pg)
+View(uniprot_hs)
+```
+
+The pg data.frame contains info about 1350 proteinGroups:
+
+```{r}
+dim(pg)
+```
+
+Your own proteinGroup file can be loaded with the __loadProteinGroups__ function. This opens a window where you can select your proteinGroups.txt file by point-and-click.
+
+```{r, eval=FALSE}
+pg = loadProteinGroups()
+```
+
+
+The pg data.frame can be cleaned with the __cleanPg__ function. This does several things:
+
+* It uses the __fill_IDs__ function and uniprot database to assign a single value to the protein.IDs and gene.Names columns in pg. First, it removes all contaminants and reverse hits from pg, and filters out proteins with <2 razor_unique peptides. Then, It tries to assign a reviewed uniprot proteinID with a high annotation-score and its associated gene symbol. If it cannot find associate a gene symbol, it fills the gene.names column with the same proteinID as is used in the protein.IDs column.
+
+* It uses the __removeDuplicates__ function to remove duplicated entries (based on protein.IDs column) that could have arised as result of __fill_IDs__. It retains the duplicate with the highest number of razor_unique peptides. When running the __removeDuplicates__ function separate of __cleanPg__ the duplicated values and information about which values were removed can be inspected using the $ accessor.
+
+* Finally, it uses the __addGeneInfo__ function to add Ensembl, Entrez, and RefSeq gene identifiers that are associated with the uniprot IDs where possible. These are added as additional columns in pg.
+
+While running these functions, __cleanPg__ shows some messages in the console about the number of removed entries and such.
+
+The resulting data.frame shouldn't contain empty fields in the protein.IDs and gene.Names columns. In addition, 3 extra columns with gene IDs are added to the end of the pg data.frame.
+
+```{r}
+pg2 = cleanPg(pg, uniprot_hs)
+dim(pg) # shows the number of rows and columns in the original pg.
+dim(pg2) # shows the number of rows and columns in the cleaned pg.
+
+tail(colnames(pg2)) # extra columns with gene IDs are added to pg
+```
+
+The functions that are used in __cleanPg__ can also be called individually. See the help pages for the functions for more info.
+
+__cleanPg__ works on all proteinGroups files, not only LFQ files. However, a couple of functions are included in this package to perform differential protein expression analysis on LFQ experiments with simple designs (i.e. no interaction effects and such). It uses the DEP package with some modifications under the hood.  
+To perform DEP analysis, we need a data.frame with the experimental design. The __createExperimentalDesign__ function tries to construct an experimental design based on the information in the pg file. If the LFQ columns follow the following naming convention, it should return the correct result: <condition>_<replicate>. The condition name is allowed to contain underscores, but do not use underscores in the replicate name. In addition, the condition and replicate parts MUST be separated by an underscore. An example of a good sample name is e.g. Celltype_A_rep1.
+
+```{r}
+ed = createExperimentalDesign(pg2)
+```
+
+A preview of the experimental design is displayed in the console. If this does not look right, check the LFQ column names in the original proteinGroups file. Alternatively, you can design an experimental design in excel and load that with __loadExperimentalDesign__. The file must be a .txt file and should contain 3 columns with the correct header: 'label', 'condition', 'replicate'. 
+
+```{r, eval=FALSE}
+ed = loadExperimentalDesign()
+```
+
+DEP analysis can be performed by running __performDEP__. This does three things:
+
+* It removes entries from the proteingroups file if it has too many missing values. The threshold for this is set with the 'thr' parameter (see below).
+
+* It performs imputation on the missing values with __performImputation__. Imputation is done with a combination of MAR and MNAR. It uses the MinProb method for MNAR and MLE method for MAR. For more information about imputation, check the DEP vignette and help page of performImputation. 
+
+* It performs DEP analysis using DEP, which in its turn uses limma.
+
+There are three parameters with default values:
+
+* The 'thr' parameter determines which entries are removed because of missing values. Its default is set at 1, meaning that an entry is included if there is at least one condition that has intensity values in at least n-1 replicates. A thr-value of 0 means that at least one condition needs to have intensity values for all replicates.
+
+* The padj_cutoff and foldchange_cutoff determine whether a protein is considered to be significantly differentially expressed. All proteins with a padj < padj_cutoff AND absolute fold change > foldchange_cutoff are labeled as significant. The defaults are set at 0.05 for padj and 2 for the foldchange_cutoff. 
+
+The result of __dep_results__ is a data.frame that shows the log2 FC (ratio), pvalue, and adjusted pvalue for all possible pairwise comparisons, among other things. For reproducibility, it is a good idea to set a seed, so that the same values are imputed when re-running the script. Some messages are shown in the console during the imputation step; these can be ignored. 
+
+```{r}
+set.seed(4)
+dep_results = performDEP(pg2, ed)
+
+head(dep_results) # shows the first few lines of the results of performDEP
+```
+
+
+
+
+

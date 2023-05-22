@@ -30,7 +30,7 @@ imputeMultiple = function(pg, expDesign, n, padj_threshold = 0.05, fc_threshold 
     
     #data_imputed = DEP::impute(dataset, fun = 'MinProb', q=0.01)
     data_imputed = performImputation(intensities, expDesign)
-    SummarizedExperiment::assays(data_norm)[[1]] = data_imputed
+    SummarizedExperiment::assays(data_norm, withDimnames = F)[[1]] = data_imputed
     data_imputed = data_norm
     data_diff_all_contrasts <- DEP::test_diff(data_imputed, type = "all")
     dep <- DEP::add_rejections(data_diff_all_contrasts, alpha = padj_threshold, lfc = fc_threshold) 

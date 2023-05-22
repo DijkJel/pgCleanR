@@ -11,7 +11,7 @@
 #' @importFrom assertthat assert_that
 #' @export
 
-performDEP = function(pg, expDesign, thr = 1){
+performDEP = function(pg, expDesign, thr = 1, padj_cutoff = 0.05, fc_cutoff = 2){
   
   
   stopifnot(checkExperimentalDesign(expDesign, pg))
@@ -23,11 +23,11 @@ performDEP = function(pg, expDesign, thr = 1){
   intensities = SummarizedExperiment::assay(data_norm)
   
   intensities_imputed = performImputation(intensities, expDesign = expDesign)
-  SummarizedExperiment::assays(data_norm)[[1]] = intensities_imputed
+  SummarizedExperiment::assays(data_norm, withDimnames = F)[[1]] = intensities_imputed
   data_imp = data_norm
   
   data_diff_all_contrasts = DEP::test_diff(data_imp, type = "all")
-  dep = DEP::add_rejections(data_diff_all_contrasts, alpha = 0.05, lfc = 1) 
+  dep = DEP::add_rejections(data_diff_all_contrasts, alpha = padj_cutoff, lfc = log2(fc_cutoff)) 
   results = DEP::get_results(dep)
   
   ids = pg[,grep('Protein.ID|Ensembl|Entrez|RefSeq', colnames(pg))]

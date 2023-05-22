@@ -23,6 +23,10 @@ createExperimentalDesign = function(pg){
                   condition = condition,
                   replicate = replicate)
   
+  df$replicate = as.vector(sapply(unique(df$condition), function(x){
+    1:length(df$condition[df$condition == x])
+  }))
+  
   message(paste0(utils::capture.output(df), collapse = "\n"))
   return(df)
 }
