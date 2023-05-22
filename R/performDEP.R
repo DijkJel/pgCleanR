@@ -35,5 +35,5 @@ performDEP = function(pg, expDesign, thr = 1, padj_cutoff = 0.05, fc_cutoff = 2)
   ids = ids[order(ids$significant, decreasing = T),]
   
   out = list(results = ids, intensities = intensities)
-  return(ids)
+  return(out)
 }
