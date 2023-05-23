@@ -34,6 +34,6 @@ performDEP = function(pg, expDesign, thr = 1, padj_cutoff = 0.05, fc_cutoff = 2)
   ids = merge(ids, results, all.x = F, all.y = T, by.x = 'Protein.IDs', by.y = 'ID')
   ids = ids[order(ids$significant, decreasing = T),]
   
-  out = list(results = ids, intensities = intensities)
+  out = list(results = ids, intensities = intensities_imputed)
   return(out)
 }
