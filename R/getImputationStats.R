@@ -54,8 +54,8 @@ getImputationStats = function(matrix_list, padj_threshold = 0.05, fc_threshold =
   
   rownames(out_padj_fraction) = rnames
   rownames(out_ratio_fraction) = rnames
-  
-  if (ncol(out_padj[[1]] == 1)){
+
+  if (ncol(out_padj[[1]]) == 1){
     mean_padj = as.matrix(sapply(out_padj, colMeans))
     sd_padj = as.matrix(sapply(out_padj, matrixStats::colSds))
     mean_ratio = as.matrix(sapply(out_ratio, colMeans))
